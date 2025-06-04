@@ -5,6 +5,15 @@ import java.util.Arrays; // for printing array
  */
 public class Realistic {
 
+    /*
+     * Line 83 uses arr.length as the index because the temporary array
+     * was made one element larger than arr (arr.length + 1).
+     * This means the index arr.length is the first available empty spot
+     * at the end of the new array. We use it to add the new value to the end.
+     * If we tried arr.length on the old array, it would be out of bounds,
+     * but for the new temporary array, it's a valid and correct index.
+     */
+
     /** Set up our test array. */
     static int[] arr = { 10, -5, 11, 2 };
 
@@ -12,59 +21,35 @@ public class Realistic {
      * Scan the entire array to find and remove its smallest value.
      * The method uses array arr[] created above.
      * 
-     * @return int with the smallest value in array arr
+     * @return Integer with the smallest value in array arr,
+     *         or null if the array is empty
      */
-    public static int getSmallest() {
-        // Assume smallest is first element
+    public static Integer getSmallest() {
+        if (arr.length == 0) {
+            return null;
+        }
+
         int smallest_index = 0;
-        // Scan the remaining elements, replacing the position of the smallest element
-        // with the position of any element found to be smaller.
+
         for (int i = 1; i < arr.length; i++) {
             if (arr[i] < arr[smallest_index]) {
-                // found new smallest, update index
                 smallest_index = i;
             }
         }
-        // When loop is done, smallest_index points to smallest element. Save it in a
-        // variable so that we can return its value when we are done.
+
         int result = arr[smallest_index];
-        // Prepare to shrink the processed array by one element, effectively removing
-        // its smallest element. A temporary array will hold the remaining elements.
         int[] temporary = new int[arr.length - 1];
 
-        /*
-         * Use two loops to copy the elements of arr[] to temporary[], except for the
-         * smallest element. The first loop copies all the elements before the smallest
-         * element and the second loop the elements after it.
-         * 
-         * EXPLANATION OF THE LOOPS (per last week's assignment): the first loop copies
-         * all the elements before the smallest element to the temporary array. To
-         * insure it does not "touch" the smallest element, the index of the loop in in
-         * the range
-         * 0 ≤ i < smallest_index.
-         * 
-         * The second loop copies all the elements after the smallest element to the
-         * temporary array. To ensure this loop doesn't touch the smallest element
-         * either, its range is
-         * smallest_index < i < arr.length
-         * 
-         * In the first loop temporary and principal array (arr) indices are
-         * synchronized. In the second array, the temporary array index becomes i-1
-         * while the principal array index remains i. The shift from temporary[i] in the
-         * first loop to temporary[i-1] in the second loop is to avoid a gap due to
-         * skipping the smallest element. Also the i-1 index in the second loop ensures
-         * that the temporary array index will not get out of bounds.
-         */
         for (int i = 0; i < smallest_index; i++) {
             temporary[i] = arr[i];
         }
         for (int i = smallest_index + 1; i < arr.length; i++) {
             temporary[i - 1] = arr[i];
         }
-        // replace principal array with temporary array.
+
         arr = temporary;
-        return result; // smallest element
-    } // method getSmallest
+        return result;
+    }
 
     /**
      * Adds a new element to the end of the principal array arr after it resizes up
@@ -73,24 +58,20 @@ public class Realistic {
      * @param value int to add to the array
      */
     public static void add(int value) {
-        // Create a larger temporary array
         int[] temporary = new int[arr.length + 1];
-        // Copy the principal array to the temporary one
         for (int i = 0; i < arr.length; i++) {
             temporary[i] = arr[i];
         }
-        // Place the new value to the end of the temporary array.
         temporary[arr.length] = value;
-        // Replace principal array with temporary array and we are done
         arr = temporary;
-    } // method add
+    }
 
     /** Driver/simple test code */
     public static void main(String[] args) {
         System.out.printf("\n\nArray before removal of smallest element: %s",
                 Arrays.toString(arr));
-        System.out.printf("\nSmallest element found: %d", getSmallest());
+        System.out.printf("\nSmallest element found: %s", getSmallest());
         System.out.printf("\nArray after removal of smallest element: %s\n\n",
                 Arrays.toString(arr));
-    } // method main
-} // class Realistic
+    }
+}
